@@ -15,6 +15,7 @@ end
 configure do
 	init_db
 	@db.execute 'CREATE TABLE IF NOT EXISTS Posts (id INTEGER PRIMARY KEY AUTOINCREMENT, created_date DATE, content TEXT)'
+	@db.execute 'CREATE TABLE IF NOT EXISTS Comments (id INTEGER PRIMARY KEY AUTOINCREMENT, created_date DATE, comment TEXT, post_id INTEGER)'
 end
 
 get '/' do
@@ -39,4 +40,24 @@ post '/new' do
 	@db.execute 'INSERT INTO Posts (content, created_date) VALUES (?, datetime())', [content]
 
 	redirect to '/'
+end
+
+get '/post/:post_id' do
+	post_id = params[:post_id]
+	results = @db.execute 'SELECT * FROM Posts WHERE id = ?', [post_id]
+	@row = results[0]
+	erb :details
+end
+
+post '/post/:post_id' do
+	post_id = params[:post_id]
+	comment  = params[:comment]
+
+	if comment.length <= 0
+		@error = 'Type comment text'
+		return erb :details
+	end
+
+	@db.execute 'INSERT INTO Comments (comment, created_date) VALUES (?, datetime())', [comment]
+
 end

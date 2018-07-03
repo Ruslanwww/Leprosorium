@@ -4,6 +4,7 @@
 	<p>
 		----------------------------------Post----------------------------------<br />
 		<%= post['content'] %><br />
-		Creared at: <%= post['created_date'] %>
+		Creared at: <%= post['created_date'] %><br />
+		<a href="/post/<%= post['id'] %>">Comments</a>
 	</p>
 <% end %>
